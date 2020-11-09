@@ -1421,3 +1421,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FuelBar: {fileID: 948385370}
+  map: {fileID: 434719538}
