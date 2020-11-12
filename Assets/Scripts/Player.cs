@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -10,34 +9,23 @@ public class Player : MonoBehaviour
     public Image FuelBar; //barra de combustível que irá diminuir ao longo do uso
     public static bool pressed;
     public GameObject map;
-    public GameObject joyStick;
     private const float OnMapEndReachedThreshold = 0.1f;
 
     void Start()
     {
-        fuel = 1;
-        pressed = false;
+      fuel = 1;
+      pressed = false;
     }
 
-    //checa se está sendo pressionado a tela e remove combustível
+//checa se está sendo pressionado a tela e remove combustível
     void Update()
     {
-        // Debug.Log(fuel);
-        if (pressed)
-        {
-            fuel -= 0.001f;
-            FuelBar.fillAmount = Mathf.MoveTowards(FuelBar.fillAmount, fuel, Time.deltaTime / 10);
-
-            if(fuel < 0)
-            {
-                joyStick.GetComponent<Joystick>().enabled = false;
-                GameObject.Find("OutCircle").GetComponent<SpriteRenderer>().enabled = false;
-                GameObject.Find("InCircle").GetComponent<SpriteRenderer>().enabled = false;
-                //desabilita joystick e remove da tela seus sprite
-            }
-        }
-
-        Debug.Log(fuel);
+      // Debug.Log(fuel);
+      if (pressed)
+      {
+        fuel -= 0.001f;
+        FuelBar.fillAmount = Mathf.MoveTowards(FuelBar.fillAmount,fuel,Time.deltaTime/10);
+      }
 
         HandleMapBoundaries();
 
@@ -45,26 +33,16 @@ public class Player : MonoBehaviour
     // colisão com gasolina e acrescenta gasolina
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Fuel")
+      if (col.gameObject.tag == "Fuel")
+      {
+        fuel += 0.5f;
+        if (fuel > 1)
         {
-            fuel += 0.5f;
-            if (fuel > 1)
-            {
-                fuel = 1;
-            }
-            Destroy(col.gameObject);
+          fuel = 1;
         }
-        if (col.gameObject.tag == "Meteorite")
-        {
-            joyStick.GetComponent<Joystick>().enabled = false;
-            GameObject.Find("OutCircle").GetComponent<SpriteRenderer>().enabled = false;
-            GameObject.Find("InCircle").GetComponent<SpriteRenderer>().enabled = false;
-            Invoke("GameOver", 2);//desativa controles, remove sprite e chama o game over
-            // pode add animação de game over durante os 2 segundos de espera
-        }
+        Destroy(col.gameObject);
+      }
     }
-
-
 
     void HandleMapBoundaries()
     {
@@ -103,10 +81,5 @@ public class Player : MonoBehaviour
         }
 
         playerTransform.position = newPlayerPosition;
-    }
-
-    void GameOver()
-    {
-        SceneManager.LoadScene("GameOver");
     }
 }
