@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -20,14 +21,24 @@ public class Player : MonoBehaviour
 //checa se está sendo pressionado a tela e remove combustível
     void Update()
     {
-      // Debug.Log(fuel);
+       Debug.Log(fuel);
       if (pressed)
       {
         fuel -= 0.001f;
         FuelBar.fillAmount = Mathf.MoveTowards(FuelBar.fillAmount,fuel,Time.deltaTime/10);
       }
 
+        if(fuel < 0)
+        {
+            GameObject.Find("Joystick").GetComponent<Joystick>().enabled = false;
+            GameObject.Find("OutCircle").GetComponent<SpriteRenderer>().enabled = false;
+            GameObject.Find("InCircle").GetComponent<SpriteRenderer>().enabled = false;
+
+            Invoke("GameOver", 2);
+        }
         HandleMapBoundaries();
+
+
 
     }
     // colisão com gasolina e acrescenta gasolina
@@ -42,6 +53,14 @@ public class Player : MonoBehaviour
         }
         Destroy(col.gameObject);
       }
+      if(col.gameObject.tag == "Meteorite")
+        {
+            GameObject.Find("Joystick").GetComponent<Joystick>().enabled = false;
+            GameObject.Find("OutCircle").GetComponent<SpriteRenderer>().enabled = false;
+            GameObject.Find("InCircle").GetComponent<SpriteRenderer>().enabled = false;
+
+            Invoke("GameOver", 2);
+        }
     }
 
     void HandleMapBoundaries()
@@ -81,5 +100,9 @@ public class Player : MonoBehaviour
         }
 
         playerTransform.position = newPlayerPosition;
+    }
+    void GameOver()
+    {
+        SceneManager.LoadScene("GameOver");
     }
 }
